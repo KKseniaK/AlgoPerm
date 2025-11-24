@@ -13,7 +13,7 @@ namespace seminar_01
             long x1 = a;
             long x2 = a * a - b * c;
 
-            double discriminant = a * a - 4 * b * c; // дискриминант характеристического уравнения
+            long discriminant = a * a - 4 * b * c; // дискриминант характеристического уравнения
 
             if (discriminant > 0) // два разных действительных корня
             {
@@ -50,7 +50,7 @@ namespace seminar_01
                 return -1;
             }
         }
-        D
+        
         static void Main()
         {
             Console.Write("Введите n: ");
