@@ -1,230 +1,179 @@
-﻿using System;
-using System.Numerics;
+using System;
 
-class seminar_03
+namespace InvestmentOptimization
 {
-    static void Main()
+    class Program
     {
-        // ===== ВВОД ДАННЫХ =====
-        // 1 строка: три числа AB BC CA (сколько дорог между A-B, B-C, C-A)
-        var p = Console.ReadLine().Split();
-        string abStr = p[0], bcStr = p[1], caStr = p[2];
-
-        // 2 строка: n — длина маршрута (сколько шагов/дней)
-        int n = int.Parse(Console.ReadLine());
-
-        // 3 строка: куда надо прийти (A/B/C)
-        int finish = CityIndex(Console.ReadLine());
-
-        // ===== ВЫБОР ВЕРСИИ =====
-        // Включена long-версия (может переполниться). BigInteger закомментирована.
-
-        Console.WriteLine(CountRoutesFromA_Long(abStr, bcStr, caStr, n, finish));        // long (может OVERFLOW)
-        //Console.WriteLine(CountRoutesFromA_BigInteger(abStr, bcStr, caStr, n, finish)); // BigInteger (точно)
-    }
-
-    // Переводит "A"/"B"/"C" в индексы 0/1/2
-    static int CityIndex(string s)
-    {
-        // Берём первый символ, приводим к верхнему регистру
-        char c = char.ToUpperInvariant(s.Trim()[0]);
-
-        // Возвращаем индекс города
-        return c switch
+        static void Main(string[] args)
         {
-            'A' => 0,
-            'B' => 1,
-            'C' => 2,
-            _ => 0 // если что-то странное ввели — считаем что это A
-        };
-    }
+            Console.WriteLine("=== Оптимальное распределение инвестиций ===\n");
 
-    // =========================================================
-    // 1) ТРОЙНАЯ ВЗАИМНАЯ РЕКУРСИЯ: LONG (с мемо + overflow)
-    // =========================================================
+            Console.WriteLine("Выберите режим:");
+            Console.WriteLine("1 - Демо (4 проекта, D=50, шаг=10)");
+            Console.WriteLine("2 - Случайные данные");
+            string mode = Console.ReadLine();
 
-    // Эти 3 переменные — кратности дорог (сколько ребёр между городами)
-    static long AB_L, BC_L, CA_L;
+            int m, D;
+            int[,] profitTable;
+            int step = 10;
 
-    // memoA_L[n] хранит уже посчитанное значение A(n)
-    // memoB_L[n] хранит уже посчитанное значение B(n)
-    // memoC_L[n] хранит уже посчитанное значение C(n)
-    // Тип long? означает: "либо значение есть, либо null (ещё не считали)".
-    static long?[] memoA_L, memoB_L, memoC_L;
-
-    // Главная функция для long-версии:
-    // возвращает строку, потому что может вернуть "OVERFLOW".
-    // Старт всегда из A.
-    static string CountRoutesFromA_Long(string ab, string bc, string ca, int n, int finish)
-    {
-        // Парсим кратности дорог из строк
-        AB_L = long.Parse(ab);
-        BC_L = long.Parse(bc);
-        CA_L = long.Parse(ca);
-
-        // Создаём массивы мемоизации на 0..n
-        memoA_L = new long?[n + 1];
-        memoB_L = new long?[n + 1];
-        memoC_L = new long?[n + 1];
-
-        try
-        {
-            // В зависимости от финиша возвращаем:
-            // 0 -> A(n), 1 -> B(n), 2 -> C(n)
-            long ans = finish switch
+            if (mode == "1")
             {
-                0 => A_L(n),
-                1 => B_L(n),
-                2 => C_L(n),
-                _ => A_L(n)
-            };
-
-            return ans.ToString();
-        }
-        catch (OverflowException)
-        {
-            // Если в checked-арифметике произошло переполнение long
-            return "OVERFLOW";
-        }
-    }
-
-    // A_L(n) — число способов оказаться в городе A через n шагов, если старт в A.
-    // Рекуррентная формула:
-    // A(n) = AB * B(n-1) + CA * C(n-1)
-    static long A_L(int n)
-    {
-        // Если уже считали — сразу возвращаем (это и есть мемоизация)
-        if (memoA_L[n].HasValue) return memoA_L[n].Value;
-
-        long res;
-
-        // База рекурсии:
-        // за 0 шагов мы в A ровно 1 способом (стоим на месте)
-        if (n == 0) res = 1;
-        else
-        {
-            // checked: если переполнение long — будет OverflowException
-            checked
+                m = 4;
+                D = 50;
+                profitTable = new int[4, 6]
+                {
+                    { 0, 11, 15, 22, 36, 51 },
+                    { 0, 13, 17, 25, 32, 54 },
+                    { 0, 14, 19, 28, 40, 53 },
+                    { 0, 12, 21, 31, 44, 52 }
+                };
+                Console.WriteLine("Режим: Демо\n");
+            }
+            else
             {
-                res = AB_L * B_L(n - 1) + CA_L * C_L(n - 1);
+                Random rnd = new Random();
+                m = rnd.Next(3, 11);
+                int minD = m * 10;
+                int maxD = 100;
+                D = rnd.Next(minD / 10, maxD / 10 + 1) * 10;
+                int steps = D / 10;
+                profitTable = new int[m, steps + 1];
+
+                for (int i = 0; i < m; i++)
+                {
+                    profitTable[i, 0] = 0;
+                    for (int s = 1; s <= steps; s++)
+                    {
+                        int prev = profitTable[i, s - 1];
+                        int maxInc = Math.Min(20, 99 - prev);
+                        profitTable[i, s] = prev + rnd.Next(1, Math.Max(2, maxInc + 1));
+                    }
+                }
+                Console.WriteLine($"Режим: Случайные данные\nКоличество проектов: {m}\nОбщая сумма инвестиций: {D}\n");
+            }
+
+            PrintProfitTable(m, D, profitTable, step);
+
+            var resultWithZero = SolveInvestmentProblem(m, D, profitTable, step, true);
+            var resultWithoutZero = SolveInvestmentProblem(m, D, profitTable, step, false);
+
+            Console.WriteLine("\n" + new string('=', 60));
+            Console.WriteLine("Вариант 1: Разрешено вложение 0");
+            Console.WriteLine($"Максимальная прибыль: {resultWithZero.MaxProfit}");
+            Console.WriteLine("Оптимальное распределение:");
+            for (int i = 0; i < m; i++)
+            {
+                Console.WriteLine($"Проект {GetProjectName(i)}: {resultWithZero.Allocation[i]} у.е.");
+            }
+
+            Console.WriteLine("\n" + new string('=', 60));
+            Console.WriteLine("Вариант 2: Запрещено вложение 0 (все проекты >= 10)");
+            if (m * 10 > D)
+            {
+                Console.WriteLine("Ошибка: Невозможно распределить средства — минимум нужно 10 на каждый проект.");
+                Console.WriteLine($"Требуется минимум {m * 10} у.е., но доступно только {D}.");
+            }
+            else
+            {
+                Console.WriteLine($"Максимальная прибыль: {resultWithoutZero.MaxProfit}");
+                Console.WriteLine("Оптимальное распределение:");
+                for (int i = 0; i < m; i++)
+                {
+                    Console.WriteLine($"Проект {GetProjectName(i)}: {resultWithoutZero.Allocation[i]} у.е.");
+                }
+            }
+
+            Console.WriteLine("\nНажмите любую клавишу для выхода...");
+            Console.ReadKey();
+        }
+
+        static void PrintProfitTable(int m, int D, int[,] profitTable, int step)
+        {
+            int steps = profitTable.GetLength(1) - 1;
+
+            Console.WriteLine("Таблица прибылей (вложения x проект):");
+            Console.Write("Влож. | ");
+            for (int i = 0; i < m; i++)
+            {
+                Console.Write($"{GetProjectName(i),3} | ");
+            }
+            Console.WriteLine();
+            Console.Write(new string('-', 8 + m * 5));
+            Console.WriteLine();
+
+            for (int s = 1; s <= steps; s++)
+            {
+                int amount = s * step;
+                Console.Write($"{amount,5} | ");
+                for (int i = 0; i < m; i++)
+                {
+                    Console.Write($"{profitTable[i, s],3} | ");
+                }
+                Console.WriteLine();
             }
         }
 
-        // Запоминаем результат и возвращаем
-        memoA_L[n] = res;
-        return res;
-    }
-
-    // B_L(n) — число способов оказаться в городе B через n шагов, старт в A.
-    // Формула:
-    // B(n) = AB * A(n-1) + BC * C(n-1)
-    static long B_L(int n)
-    {
-        if (memoB_L[n].HasValue) return memoB_L[n].Value;
-
-        long res;
-
-        // За 0 шагов в B мы не можем оказаться, стартуем в A => 0 способов
-        if (n == 0) res = 0;
-        else
+        static string GetProjectName(int index)
         {
-            checked
-            {
-                res = AB_L * A_L(n - 1) + BC_L * C_L(n - 1);
-            }
+            if (index < 26) return ((char)('A' + index)).ToString();
+            return "P" + (index + 1);
         }
 
-        memoB_L[n] = res;
-        return res;
-    }
-
-    // C_L(n) — число способов оказаться в городе C через n шагов, старт в A.
-    // Формула:
-    // C(n) = CA * A(n-1) + BC * B(n-1)
-    static long C_L(int n)
-    {
-        if (memoC_L[n].HasValue) return memoC_L[n].Value;
-
-        long res;
-
-        // За 0 шагов в C тоже 0 способов (старт A)
-        if (n == 0) res = 0;
-        else
+        static Result SolveInvestmentProblem(int m, int D, int[,] profitTable, int step, bool allowZero)
         {
-            checked
+            int steps = D / step;
+            int minStepsPerProject = allowZero ? 0 : 1;
+            int totalMinSteps = m * minStepsPerProject;
+
+            if (totalMinSteps > steps)
             {
-                res = CA_L * A_L(n - 1) + BC_L * B_L(n - 1);
+                int[] allocation0 = new int[m];
+                return new Result { MaxProfit = 0, Allocation = allocation0 };
             }
+
+            int remainingSteps = steps - totalMinSteps;
+            int[,] dp = new int[m + 1, remainingSteps + 1];
+            int[,] parent = new int[m + 1, remainingSteps + 1];
+
+            for (int s = 0; s <= remainingSteps; s++)
+                dp[0, s] = 0;
+
+            for (int i = 1; i <= m; i++)
+            {
+                for (int s = 0; s <= remainingSteps; s++)
+                {
+                    dp[i, s] = dp[i - 1, s];
+                    parent[i, s] = 0;
+
+                    for (int k = 0; k <= s; k++)
+                    {
+                        int currentProfit = dp[i - 1, s - k] + profitTable[i - 1, k + minStepsPerProject];
+                        if (currentProfit > dp[i, s])
+                        {
+                            dp[i, s] = currentProfit;
+                            parent[i, s] = k;
+                        }
+                    }
+                }
+            }
+
+            int[] allocation = new int[m];
+            int remaining = remainingSteps;
+            for (int i = m; i >= 1; i--)
+            {
+                int investedSteps = parent[i, remaining];
+                allocation[i - 1] = (investedSteps + minStepsPerProject) * step;
+                remaining -= investedSteps;
+            }
+
+            return new Result { MaxProfit = dp[m, remainingSteps], Allocation = allocation };
         }
-
-        memoC_L[n] = res;
-        return res;
     }
 
-    // =========================================================
-    // 2) ТРОЙНАЯ ВЗАИМНАЯ РЕКУРСИЯ: BigInteger (с мемо)
-    // =========================================================
-
-    // Аналогичные переменные, но уже типа BigInteger
-    static BigInteger AB_B, BC_B, CA_B;
-
-    // Мемоизация для BigInteger
-    static BigInteger?[] memoA_B, memoB_B, memoC_B;
-
-    // Главная функция для BigInteger-версии:
-    // возвращает BigInteger — переполнения нет.
-    static BigInteger CountRoutesFromA_BigInteger(string ab, string bc, string ca, int n, int finish)
+    struct Result
     {
-        AB_B = BigInteger.Parse(ab);
-        BC_B = BigInteger.Parse(bc);
-        CA_B = BigInteger.Parse(ca);
-
-        memoA_B = new BigInteger?[n + 1];
-        memoB_B = new BigInteger?[n + 1];
-        memoC_B = new BigInteger?[n + 1];
-
-        // Выбираем, какое значение вернуть: A(n), B(n) или C(n)
-        return finish switch
-        {
-            0 => A_B(n),
-            1 => B_B(n),
-            2 => C_B(n),
-            _ => A_B(n)
-        };
-    }
-
-    // A_B(n) — то же самое что A_L(n), только BigInteger
-    static BigInteger A_B(int n)
-    {
-        if (memoA_B[n].HasValue) return memoA_B[n]!.Value;
-
-        // База: A(0)=1
-        // Рекурсия: A(n)=AB*B(n-1)+CA*C(n-1)
-        BigInteger res = (n == 0) ? 1 : AB_B * B_B(n - 1) + CA_B * C_B(n - 1);
-
-        memoA_B[n] = res;
-        return res;
-    }
-
-    // B_B(n): B(0)=0, B(n)=AB*A(n-1)+BC*C(n-1)
-    static BigInteger B_B(int n)
-    {
-        if (memoB_B[n].HasValue) return memoB_B[n]!.Value;
-
-        BigInteger res = (n == 0) ? 0 : AB_B * A_B(n - 1) + BC_B * C_B(n - 1);
-
-        memoB_B[n] = res;
-        return res;
-    }
-
-    // C_B(n): C(0)=0, C(n)=CA*A(n-1)+BC*B(n-1)
-    static BigInteger C_B(int n)
-    {
-        if (memoC_B[n].HasValue) return memoC_B[n]!.Value;
-
-        BigInteger res = (n == 0) ? 0 : CA_B * A_B(n - 1) + BC_B * B_B(n - 1);
-
-        memoC_B[n] = res;
-        return res;
+        public int MaxProfit;
+        public int[] Allocation;
     }
 }
