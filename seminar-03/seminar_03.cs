@@ -48,10 +48,10 @@ class seminar_03
         Console.WriteLine("1) AA AB BC CA BB CC   (6 чисел через пробел)");
         Console.WriteLine("2) n                   (сколько дней)");
         Console.WriteLine("3) finish              (A/B/C)");
-        Console.WriteLine("Пример: 1 1 1 1 0 0  |  5  |  A");
+        Console.WriteLine("Пример: 1 1 1 1 0 0 \n5 \nA");
         Console.WriteLine();
 
-        var p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var p = Console.ReadLine().Split(' ');
         string aa = p[0], ab = p[1], bc = p[2], ca = p[3], bb = p[4], cc = p[5];
 
         int n = int.Parse(Console.ReadLine());
