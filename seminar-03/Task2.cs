@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace InvestmentOptimization
+namespace seminar
 {
     class Program
     {
@@ -8,106 +8,137 @@ namespace InvestmentOptimization
         {
             Console.WriteLine("=== Оптимальное распределение инвестиций ===\n");
 
-            Console.WriteLine("Выберите режим:");
-            Console.WriteLine("1 - Демо (5 проектов, D=700, новые данные)");
-            Console.WriteLine("2 - Случайные данные");
-            string mode = Console.ReadLine();
-
-            int m, D;
-            int[,] profitTable;
-            int step = 100;
-
-            if (mode == "1")
+            while (true)
             {
-                m = 5;
-                D = 700;
-                profitTable = new int[5, 8]
-                {
-                    { 0, 12, 22, 35, 46, 58, 70, 85 },
-                    { 0, 10, 20, 30, 42, 52, 60, 66 },
-                    { 0, 14, 26, 38, 48, 55, 62, 68 },
-                    { 0,  9, 18, 28, 36, 43, 49, 54 },
-                    { 0, 13, 24, 34, 45, 56, 65, 73 }
-                };
-                Console.WriteLine("Режим: Демо (5 проектов, D=700, новые данные)\n");
-            }
-            else
-            {
-                Random rnd = new Random();
-                m = rnd.Next(3, 11);
-                int minD = m * 100;
-                int maxD = 1000;
-                D = rnd.Next(minD / 100, maxD / 100 + 1) * 100;
-                int steps = D / 100;
-                profitTable = new int[m, steps + 1];
+                Console.WriteLine("Выберите режим:");
+                Console.WriteLine("1 - Демо (5 проектов, инвестиций=60, шаг=10)");
+                Console.WriteLine("2 - Случайные данные");
+                Console.WriteLine("3 - Выход");
+                string input = Console.ReadLine();
 
-                for (int i = 0; i < m; i++)
+                if (input == "1")
                 {
-                    profitTable[i, 0] = 0;
-                    for (int s = 1; s <= steps; s++)
-                    {
-                        int prev = profitTable[i, s - 1];
-                        int maxInc = Math.Min(20, 99 - prev);
-                        profitTable[i, s] = prev + rnd.Next(1, Math.Max(2, maxInc + 1));
-                    }
+                    var (projectCount, investSum, profitTable) = DemoData();
+                    Optimization(projectCount, investSum, profitTable, 10);
+                    Console.WriteLine("\n" + new string('-', 50) + "\n");
                 }
-                Console.WriteLine($"Режим: Случайные данные\nКоличество проектов: {m}\nОбщая сумма инвестиций: {D}\n");
+                else if (input == "2")
+                {
+                    var (projectCount, investSum, profitTable) = GenerateRandomData();
+                    Optimization(projectCount, investSum, profitTable, 10);
+                    Console.WriteLine("\n" + new string('-', 50) + "\n");
+                }
+                else if (input == "3")
+                {
+                    Console.WriteLine("Выход из программы.");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("\nНекорректный ввод. Введите 1, 2 или 3.\n");
+                }
             }
 
-            PrintProfitTable(m, D, profitTable);
+            Console.WriteLine("Нажмите любую клавишу для завершения...");
+            Console.ReadKey();
+        }
 
-            var resultWithZero = SolveInvestmentProblem(m, D, profitTable, step, true);
-            var resultWithoutZero = SolveInvestmentProblem(m, D, profitTable, step, false);
+        static (int projectCount, int investSum, int[,] profitTable) DemoData()
+        {
+            int projectCount = 5;
+            int investSum = 60;
+            int[,] profitTable = new int[5, 7]
+            {
+                { 0,  9, 17, 26, 37, 49, 62 },
+                { 0, 11, 19, 28, 39, 51, 64 },
+                { 0, 10, 18, 27, 38, 50, 63 },
+                { 0, 12, 20, 29, 40, 52, 65 },
+                { 0, 13, 21, 30, 41, 53, 66 }
+
+            };
+
+            Console.WriteLine("\nРежим: Демо\n");
+            return (projectCount, investSum, profitTable);
+        }
+
+        static (int projectCount, int investSum, int[,] profitTable) GenerateRandomData()
+        {
+            Random rnd = new Random();
+            int projectCount = rnd.Next(3, 11);
+            int minD = projectCount * 10;
+            int maxD = 100;
+            int investSum = rnd.Next(minD / 10, maxD / 10 + 1) * 10;
+            int steps = investSum / 10;
+            int[,] profitTable = new int[projectCount, steps + 1];
+
+            for (int i = 0; i < projectCount; i++)
+            {
+                profitTable[i, 0] = 0;
+                for (int s = 1; s <= steps; s++)
+                {
+                    int prev = profitTable[i, s - 1];
+                    int maxInc = Math.Min(20, 99 - prev);
+                    profitTable[i, s] = prev + rnd.Next(1, Math.Max(2, maxInc + 1));
+                }
+            }
+
+            Console.WriteLine($"\nРежим: Случайные данные\nКоличество проектов: {projectCount}\nОбщая сумма инвестиций: {investSum}\n");
+            return (projectCount, investSum, profitTable);
+        }
+
+        static void Optimization(int projectCount, int investSum, int[,] profitTable, int step)
+        {
+            TableStructure(projectCount, investSum, profitTable, step);
+
+            var resultWithZero = SolveProblem(projectCount, investSum, profitTable, step, true);
+            var resultWithoutZero = SolveProblem(projectCount, investSum, profitTable, step, false);
 
             Console.WriteLine("\n" + new string('=', 60));
             Console.WriteLine("Вариант 1: Разрешено вложение 0");
             Console.WriteLine($"Максимальная прибыль: {resultWithZero.MaxProfit}");
             Console.WriteLine("Оптимальное распределение:");
-            for (int i = 0; i < m; i++)
+            for (int i = 0; i < projectCount; i++)
             {
                 Console.WriteLine($"Проект {GetProjectName(i)}: {resultWithZero.Allocation[i]} у.е.");
             }
 
             Console.WriteLine("\n" + new string('=', 60));
-            Console.WriteLine("Вариант 2: Запрещено вложение 0 (все проекты >= 100)");
-            if (m * 100 > D)
+            Console.WriteLine("Вариант 2: Запрещено вложение 0");
+            if (projectCount * 10 > investSum)
             {
-                Console.WriteLine("Ошибка: Невозможно распределить средства — минимум нужно 100 на каждый проект.");
-                Console.WriteLine($"Требуется минимум {m * 100} у.е., но доступно только {D}.");
+                Console.WriteLine("Ошибка: Невозможно распределить средства — минимум нужно 10 на каждый проект.");
+                Console.WriteLine($"Требуется минимум {projectCount * 10} у.е., но доступно только {investSum}.");
             }
             else
             {
                 Console.WriteLine($"Максимальная прибыль: {resultWithoutZero.MaxProfit}");
                 Console.WriteLine("Оптимальное распределение:");
-                for (int i = 0; i < m; i++)
+                for (int i = 0; i < projectCount; i++)
                 {
                     Console.WriteLine($"Проект {GetProjectName(i)}: {resultWithoutZero.Allocation[i]} у.е.");
                 }
             }
-
-            Console.WriteLine("\nНажмите любую клавишу для выхода...");
-            Console.ReadKey();
         }
 
-        static void PrintProfitTable(int m, int D, int[,] profitTable)
+        static void TableStructure(int projectCount, int investSum, int[,] profitTable, int step)
         {
             int steps = profitTable.GetLength(1) - 1;
 
-            Console.WriteLine("Таблица прибылей (вложения x проект):");
+            Console.WriteLine("\nТаблица прибылей:");
             Console.Write("Влож. | ");
-            for (int i = 0; i < m; i++)
+            for (int i = 0; i < projectCount; i++)
             {
                 Console.Write($"{GetProjectName(i),3} | ");
             }
             Console.WriteLine();
-            Console.Write(new string('-', 8 + m * 5));
+            Console.Write(new string('-', 8 + projectCount * 5));
             Console.WriteLine();
 
             for (int s = 1; s <= steps; s++)
             {
-                int amount = s * 100;
+                int amount = s * step;
                 Console.Write($"{amount,5} | ");
-                for (int i = 0; i < m; i++)
+                for (int i = 0; i < projectCount; i++)
                 {
                     Console.Write($"{profitTable[i, s],3} | ");
                 }
@@ -121,60 +152,54 @@ namespace InvestmentOptimization
             return "P" + (index + 1);
         }
 
-        static Result SolveInvestmentProblem(int m, int D, int[,] profitTable, int step, bool allowZero)
+        static (int MaxProfit, int[] Allocation) SolveProblem(int projectCount, int investSum, int[,] profitTable, int step, bool allowZero)
         {
-            int steps = D / step;
+            int steps = investSum / step;
             int minStepsPerProject = allowZero ? 0 : 1;
-            int totalMinSteps = m * minStepsPerProject;
+            int totalMinSteps = projectCount * minStepsPerProject;
 
             if (totalMinSteps > steps)
             {
-                int[] allocation0 = new int[m];
-                return new Result { MaxProfit = 0, Allocation = allocation0 };
+                int[] allocation0 = new int[projectCount];
+                return (0, allocation0);
             }
 
             int remainingSteps = steps - totalMinSteps;
-            int[,] dp = new int[m + 1, remainingSteps + 1];
-            int[,] parent = new int[m + 1, remainingSteps + 1];
+            int[,] profit = new int[projectCount + 1, remainingSteps + 1];
+            int[,] parent = new int[projectCount + 1, remainingSteps + 1];
 
             for (int s = 0; s <= remainingSteps; s++)
-                dp[0, s] = 0;
+                profit[0, s] = 0;
 
-            for (int i = 1; i <= m; i++)
+            for (int i = 1; i <= projectCount; i++)
             {
                 for (int s = 0; s <= remainingSteps; s++)
                 {
-                    dp[i, s] = dp[i - 1, s];
+                    profit[i, s] = profit[i - 1, s];
                     parent[i, s] = 0;
 
                     for (int k = 0; k <= s; k++)
                     {
-                        int currentProfit = dp[i - 1, s - k] + profitTable[i - 1, k + minStepsPerProject];
-                        if (currentProfit > dp[i, s])
+                        int currentProfit = profit[i - 1, s - k] + profitTable[i - 1, k + minStepsPerProject];
+                        if (currentProfit > profit[i, s])
                         {
-                            dp[i, s] = currentProfit;
+                            profit[i, s] = currentProfit;
                             parent[i, s] = k;
                         }
                     }
                 }
             }
 
-            int[] allocation = new int[m];
+            int[] allocation = new int[projectCount];
             int remaining = remainingSteps;
-            for (int i = m; i >= 1; i--)
+            for (int i = projectCount; i >= 1; i--)
             {
                 int investedSteps = parent[i, remaining];
                 allocation[i - 1] = (investedSteps + minStepsPerProject) * step;
                 remaining -= investedSteps;
             }
 
-            return new Result { MaxProfit = dp[m, remainingSteps], Allocation = allocation };
+            return (profit[projectCount, remainingSteps], allocation);
         }
-    }
-
-    struct Result
-    {
-        public int MaxProfit;
-        public int[] Allocation;
     }
 }
