@@ -288,14 +288,14 @@ class seminar_02
         for (int i = 0; i < repeats; i++)
             r1 = CnkIter2D(n, k);
         sw.Stop();
-        Console.WriteLine($"1) 2D матрица: {r1} | Время: {sw.ElapsedMilliseconds} мс");
+        Console.WriteLine($"1) 2D матрица: {r1} | Время: {sw.Elapsed.TotalMilliseconds} мс");
 
         sw.Restart();
         long r2 = 0;
         for (int i = 0; i < repeats; i++)
             r2 = CnkIter1D(n, k);
         sw.Stop();
-        Console.WriteLine($"2) 1D массив: {r2} | Время: {sw.ElapsedMilliseconds} мс");
+        Console.WriteLine($"2) 1D массив: {r2} | Время: {sw.Elapsed.TotalMilliseconds} мс");
 
         memo = new long[n + 1, k + 1];
         for (int i = 0; i <= n; i++)
@@ -307,7 +307,7 @@ class seminar_02
         for (int i = 0; i < repeats; i++)
             r3 = CnkPascalMemo(n, k);
         sw.Stop();
-        Console.WriteLine($"3) Паскаль + мемоизация (рекурсивно): {r3} | Время: {sw.ElapsedMilliseconds} мс");
+        Console.WriteLine($"3) Паскаль + мемоизация (рекурсивно): {r3} | Время: {sw.Elapsed.TotalMilliseconds} мс");
     }
 
 
