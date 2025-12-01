@@ -11,7 +11,7 @@ namespace seminar
             while (true)
             {
                 Console.WriteLine("Выберите режим:");
-                Console.WriteLine("1 - Демо (5 проектов, инвестиций=60, шаг=10)");
+                Console.WriteLine("1 - Демо (5 проектов, investSum=60, шаг=10)");
                 Console.WriteLine("2 - Случайные данные");
                 Console.WriteLine("3 - Выход");
                 string input = Console.ReadLine();
@@ -65,9 +65,9 @@ namespace seminar
         {
             Random rnd = new Random();
             int projectCount = rnd.Next(3, 11);
-            int minD = projectCount * 10;
-            int maxD = 100;
-            int investSum = rnd.Next(minD / 10, maxD / 10 + 1) * 10;
+            int minInvestSum = projectCount * 10;
+            int maxInvestSum = 100;
+            int investSum = rnd.Next(minInvestSum / 10, maxInvestSum / 10 + 1) * 10;
             int steps = investSum / 10;
             int[,] profitTable = new int[projectCount, steps + 1];
 
