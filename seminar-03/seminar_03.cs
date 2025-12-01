@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 
 class seminar_03
