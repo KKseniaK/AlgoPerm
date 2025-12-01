@@ -78,15 +78,8 @@ namespace seminar
                 {
                     int prev = profitTable[i, s - 1];
 
-                    if (prev >= 99)
-                    {
-                        profitTable[i, s] = 99;
-                    }
-                    else
-                    {
-                        int maxInc = Math.Min(20, 99 - prev);
-                        profitTable[i, s] = prev + rnd.Next(1, maxInc + 1);
-                    }
+                    int maxInc = Math.Min(20, 99 - prev);
+                    profitTable[i, s] = prev + rnd.Next(1, Math.Max(2, maxInc + 1));
                 }
             }
 
