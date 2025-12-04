@@ -8,7 +8,7 @@ class seminar_03
         while (true)
         {
             Console.WriteLine("Меню:");
-            Console.WriteLine("1 - Task1 (3 города, дороги + петли, взаимная рекурсия)");
+            Console.WriteLine("1 - Task1 (города)");
             Console.WriteLine("2 - Task2 (инвестиции)");
             Console.WriteLine("0 - Выход");
             Console.Write("Выбор: ");

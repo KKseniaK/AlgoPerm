@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("seminar-02")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+704d21f3dc377dc139daac931d1b12e37b9040ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aee64f298bda7082e76d0606626ee565f294f9b4")]
 [assembly: System.Reflection.AssemblyProductAttribute("seminar-02")]
 [assembly: System.Reflection.AssemblyTitleAttribute("seminar-02")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
