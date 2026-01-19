@@ -1,0 +1,15 @@
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\bin\Debug\net8.0\seminar-21.exe
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\bin\Debug\net8.0\seminar-21.deps.json
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\bin\Debug\net8.0\seminar-21.runtimeconfig.json
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\bin\Debug\net8.0\seminar-21.dll
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\bin\Debug\net8.0\seminar-21.pdb
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.AssemblyInfoInputs.cache
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.AssemblyInfo.cs
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.csproj.CoreCompileInputs.cache
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.sourcelink.json
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.dll
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\refint\seminar-21.dll
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.pdb
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\seminar-21.genruntimeconfig.cache
+C:\Users\kseni\source\repos\AlgoPerm\seminar-21\obj\Debug\net8.0\ref\seminar-21.dll
