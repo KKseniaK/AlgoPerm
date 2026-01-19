@@ -22,58 +22,100 @@ class seminar_03
         }
     }
 
-    #region TASK 1
+    #region TASK 1 (Directed + Undirected, compatible with old undirected)
+
     static void Task1()
     {
         Console.WriteLine("\nTask1:");
         Console.WriteLine("1 - Ввести данные");
-        Console.WriteLine("2 - Демо");
+        Console.WriteLine("2 - Демо (старое, неориент.)");
         Console.Write("Выбор: ");
         string mode = Console.ReadLine().Trim();
 
         if (mode == "2")
         {
-            Task1Demo();
+            Task1Demo_OldUndirected();
             Console.WriteLine();
             return;
         }
 
-        Task1Input();
+        Task1Input_New();
         Console.WriteLine();
     }
 
-    static void Task1Input()
+    static void Task1Input_New()
     {
-        Console.WriteLine("\nВвод:");
-        Console.WriteLine("1) AA AB BC CA BB CC   (6 чисел через пробел)");
-        Console.WriteLine("2) n                   (сколько дней)");
-        Console.WriteLine("3) finish              (A/B/C)");
-        Console.WriteLine("Пример: 1 1 1 1 0 0 \n5 \nA");
-        Console.WriteLine();
+        Console.WriteLine("\nТип графа:");
+        Console.WriteLine("1 - Неориентированный (старый формат 6 чисел: AA AB BC CA BB CC)");
+        Console.WriteLine("2 - Ориентированный   (новый формат 9 чисел: AA AB AC BA BB BC CA CB CC)");
+        Console.Write("Выбор: ");
+        string gtype = Console.ReadLine().Trim();
 
-        var p = Console.ReadLine().Split(' ');
-        string aa = p[0], ab = p[1], bc = p[2], ca = p[3], bb = p[4], cc = p[5];
+        string AA, AB, AC, BA, BB, BC, CA, CB, CC;
 
-        int n = int.Parse(Console.ReadLine());
+        if (gtype == "2")
+        {
+            Console.WriteLine("\nВвод (9 чисел через пробел):");
+            Console.WriteLine("AA AB AC BA BB BC CA CB CC");
+            var p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            AA = p[0]; AB = p[1]; AC = p[2];
+            BA = p[3]; BB = p[4]; BC = p[5];
+            CA = p[6]; CB = p[7]; CC = p[8];
+        }
+        else
+        {
+            Console.WriteLine("\nВвод (6 чисел через пробел) — как в старой версии:");
+            Console.WriteLine("AA AB BC CA BB CC");
+            var p = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            AA = p[0];
+            AB = p[1];
+            BC = p[2];
+            CA = p[3];
+            BB = p[4];
+            CC = p[5];
+
+            BA = AB;
+            CB = BC;
+            AC = CA;
+        }
+
+        Console.WriteLine("\nДальше:");
+        Console.WriteLine("N (максимум шагов)");
+        Console.WriteLine("finish (A/B/C)");
+        int N = int.Parse(Console.ReadLine());
         int finish = CityIndex(Console.ReadLine());
 
-        Console.WriteLine("Ответ (long): " + CountRoutesFromA_Long(aa, ab, bc, ca, bb, cc, n, finish));
-        //Console.WriteLine("Ответ (BigInteger): " + CountRoutesFromA_Big(aa, ab, bc, ca, bb, cc, n, finish));
+        Console.WriteLine();
+        Console.WriteLine("Старт: A, финиш: " + (finish == 0 ? "A" : finish == 1 ? "B" : "C"));
+        Console.WriteLine();
+
+        for (int n = 0; n <= N; n++)
+        {
+            string ansLong = CountRoutesFromA_Long_Directed(AA, AB, AC, BA, BB, BC, CA, CB, CC, n, finish);
+            BigInteger ansBig = CountRoutesFromA_Big_Directed(AA, AB, AC, BA, BB, BC, CA, CB, CC, n, finish);
+            Console.WriteLine($"n={n}: long={ansLong},\tBigInteger={ansBig}");
+        }
     }
 
-    static void Task1Demo()
+    static int CityIndex(string s)
     {
-        // Наш граф:
-        // AA=1, AB=1, BC=1, CA=1, BB=1, CC=0
+        char c = char.ToUpperInvariant(s.Trim()[0]);
+        return c switch { 'A' => 0, 'B' => 1, 'C' => 2, _ => 0 };
+    }
+
+    static void Task1Demo_OldUndirected()
+    {
         string aa = "1", ab = "1", bc = "1", ca = "1", bb = "1", cc = "0";
-        int finish = 2; 
+        int finish = 2;
 
         Console.WriteLine("\nДемо: все дороги + петли в A и B, финиш C");
         Console.WriteLine("AA AB BC CA BB CC = 1 1 1 1 1 0");
         Console.WriteLine("Старт: A, финиш: C");
 
-        long cPrev2 = 0; 
-        long cPrev1 = 1; 
+        long cPrev2 = 0;
+        long cPrev1 = 1;
 
         for (int n = 0; n <= 5; n++)
         {
@@ -88,8 +130,8 @@ class seminar_03
                 cFormula = cNow;
             }
 
-            string ansLong = CountRoutesFromA_Long(aa, ab, bc, ca, bb, cc, n, finish);
-            BigInteger ansBig = CountRoutesFromA_Big(aa, ab, bc, ca, bb, cc, n, finish);
+            string ansLong = CountRoutesFromA_Long_Undirected(aa, ab, bc, ca, bb, cc, n, finish);
+            BigInteger ansBig = CountRoutesFromA_Big_Undirected(aa, ab, bc, ca, bb, cc, n, finish);
 
             Console.WriteLine($"n={n}: формула c(n)={cFormula}, \tlong={ansLong}, \tBigInteger={ansBig}");
         }
@@ -97,25 +139,18 @@ class seminar_03
         Console.WriteLine();
     }
 
-
-
-    static int CityIndex(string s)
-    {
-        char c = char.ToUpperInvariant(s.Trim()[0]);
-        return c switch { 'A' => 0, 'B' => 1, 'C' => 2, _ => 0 };
-    }
-
-    static long AA_L, AB_L, BC_L, CA_L, BB_L, CC_L;
+    static long AA_L, AB_L, AC_L, BA_L, BB_L, BC_L, CA_L, CB_L, CC_L;
     static long?[] memoA_L, memoB_L, memoC_L;
 
-    static string CountRoutesFromA_Long(string aa, string ab, string bc, string ca, string bb, string cc, int n, int finish)
+    static string CountRoutesFromA_Long_Directed(
+        string AA, string AB, string AC,
+        string BA, string BB, string BC,
+        string CA, string CB, string CC,
+        int n, int finish)
     {
-        AA_L = long.Parse(aa);
-        AB_L = long.Parse(ab);
-        BC_L = long.Parse(bc);
-        CA_L = long.Parse(ca);
-        BB_L = long.Parse(bb);
-        CC_L = long.Parse(cc);
+        AA_L = long.Parse(AA); AB_L = long.Parse(AB); AC_L = long.Parse(AC);
+        BA_L = long.Parse(BA); BB_L = long.Parse(BB); BC_L = long.Parse(BC);
+        CA_L = long.Parse(CA); CB_L = long.Parse(CB); CC_L = long.Parse(CC);
 
         memoA_L = new long?[n + 1];
         memoB_L = new long?[n + 1];
@@ -142,13 +177,8 @@ class seminar_03
     {
         if (memoA_L[n].HasValue) return memoA_L[n].Value;
         long res;
-
         if (n == 0) res = 1;
-        else
-        {
-            checked { res = AA_L * A_L(n - 1) + AB_L * B_L(n - 1) + CA_L * C_L(n - 1);}
-        }
-
+        else checked { res = AA_L * A_L(n - 1) + BA_L * B_L(n - 1) + CA_L * C_L(n - 1); }
         memoA_L[n] = res;
         return res;
     }
@@ -157,12 +187,8 @@ class seminar_03
     {
         if (memoB_L[n].HasValue) return memoB_L[n].Value;
         long res;
-
         if (n == 0) res = 0;
-        else
-        {
-            checked { res = AB_L * A_L(n - 1) + BB_L * B_L(n - 1) + BC_L * C_L(n - 1); }
-        }
+        else checked { res = AB_L * A_L(n - 1) + BB_L * B_L(n - 1) + CB_L * C_L(n - 1); }
         memoB_L[n] = res;
         return res;
     }
@@ -171,30 +197,24 @@ class seminar_03
     {
         if (memoC_L[n].HasValue) return memoC_L[n].Value;
         long res;
-
         if (n == 0) res = 0;
-        else
-        {
-            checked { res = CA_L * A_L(n - 1) + BC_L * B_L(n - 1) + CC_L * C_L(n - 1); }
-        }
-
+        else checked { res = AC_L * A_L(n - 1) + BC_L * B_L(n - 1) + CC_L * C_L(n - 1); }
         memoC_L[n] = res;
         return res;
     }
 
-    #region BigInteger(the same) 
-
-    static BigInteger AA_B, AB_B, BC_B, CA_B, BB_B, CC_B;
+    static BigInteger AA_B, AB_B, AC_B, BA_B, BB_B, BC_B, CA_B, CB_B, CC_B;
     static BigInteger?[] memoA_B, memoB_B, memoC_B;
 
-    static BigInteger CountRoutesFromA_Big(string aa, string ab, string bc, string ca, string bb, string cc, int n, int finish)
+    static BigInteger CountRoutesFromA_Big_Directed(
+        string AA, string AB, string AC,
+        string BA, string BB, string BC,
+        string CA, string CB, string CC,
+        int n, int finish)
     {
-        AA_B = BigInteger.Parse(aa);
-        AB_B = BigInteger.Parse(ab);
-        BC_B = BigInteger.Parse(bc);
-        CA_B = BigInteger.Parse(ca);
-        BB_B = BigInteger.Parse(bb);
-        CC_B = BigInteger.Parse(cc);
+        AA_B = BigInteger.Parse(AA); AB_B = BigInteger.Parse(AB); AC_B = BigInteger.Parse(AC);
+        BA_B = BigInteger.Parse(BA); BB_B = BigInteger.Parse(BB); BC_B = BigInteger.Parse(BC);
+        CA_B = BigInteger.Parse(CA); CB_B = BigInteger.Parse(CB); CC_B = BigInteger.Parse(CC);
 
         memoA_B = new BigInteger?[n + 1];
         memoB_B = new BigInteger?[n + 1];
@@ -212,7 +232,7 @@ class seminar_03
     static BigInteger A_B(int n)
     {
         if (memoA_B[n].HasValue) return memoA_B[n]!.Value;
-        BigInteger res = (n == 0) ? 1 : AA_B * A_B(n - 1) + AB_B * B_B(n - 1) + CA_B * C_B(n - 1);
+        BigInteger res = (n == 0) ? 1 : AA_B * A_B(n - 1) + BA_B * B_B(n - 1) + CA_B * C_B(n - 1);
         memoA_B[n] = res;
         return res;
     }
@@ -220,7 +240,7 @@ class seminar_03
     static BigInteger B_B(int n)
     {
         if (memoB_B[n].HasValue) return memoB_B[n]!.Value;
-        BigInteger res = (n == 0) ? 0 : AB_B * A_B(n - 1) + BB_B * B_B(n - 1) + BC_B * C_B(n - 1);
+        BigInteger res = (n == 0) ? 0 : AB_B * A_B(n - 1) + BB_B * B_B(n - 1) + CB_B * C_B(n - 1);
         memoB_B[n] = res;
         return res;
     }
@@ -228,13 +248,33 @@ class seminar_03
     static BigInteger C_B(int n)
     {
         if (memoC_B[n].HasValue) return memoC_B[n]!.Value;
-        BigInteger res = (n == 0) ? 0 : CA_B * A_B(n - 1) + BC_B * B_B(n - 1) + CC_B * C_B(n - 1);
+        BigInteger res = (n == 0) ? 0 : AC_B * A_B(n - 1) + BC_B * B_B(n - 1) + CC_B * C_B(n - 1);
         memoC_B[n] = res;
         return res;
     }
-    #endregion
+
+    static string CountRoutesFromA_Long_Undirected(string aa, string ab, string bc, string ca, string bb, string cc, int n, int finish)
+    {
+        return CountRoutesFromA_Long_Directed(
+            aa, ab, ca,
+            ab, bb, bc,
+            ca, bc, cc,
+            n, finish
+        );
+    }
+
+    static BigInteger CountRoutesFromA_Big_Undirected(string aa, string ab, string bc, string ca, string bb, string cc, int n, int finish)
+    {
+        return CountRoutesFromA_Big_Directed(
+            aa, ab, ca,
+            ab, bb, bc,
+            ca, bc, cc,
+            n, finish
+        );
+    }
 
     #endregion
+
 
     #region TASK 2
 

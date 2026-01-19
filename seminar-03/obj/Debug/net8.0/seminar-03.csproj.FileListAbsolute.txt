@@ -13,3 +13,10 @@ C:\Users\kseni\source\repos\AlgoPerm\seminar-03\obj\Debug\net8.0\refint\seminar-
 C:\Users\kseni\source\repos\AlgoPerm\seminar-03\obj\Debug\net8.0\seminar-03.pdb
 C:\Users\kseni\source\repos\AlgoPerm\seminar-03\obj\Debug\net8.0\seminar-03.genruntimeconfig.cache
 C:\Users\kseni\source\repos\AlgoPerm\seminar-03\obj\Debug\net8.0\ref\seminar-03.dll
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\bin\Debug\net8.0\seminar-02.deps.json
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\bin\Debug\net8.0\seminar-02.runtimeconfig.json
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\bin\Debug\net8.0\seminar-02.exe
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\bin\Debug\net8.0\seminar-02.dll
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\bin\Debug\net8.0\seminar-02.pdb
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\obj\Debug\net8.0\seminar-03.csproj.AssemblyReference.cache
+C:\Users\kseni\source\repos\AlgoPerm\seminar-03\obj\Debug\net8.0\seminar-03.csproj.Up2Date

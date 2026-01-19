@@ -8,4 +8,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="E:\HSE ALL\HSE2025\АлгоВД\seminar_03_обновленный по графам%28Кротова, Понькина, Чепкасова%29.cs" Link="seminar_03_обновленный по графам%28Кротова, Понькина, Чепкасова%29.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\seminar-02\seminar-02.csproj" />
+  </ItemGroup>
+
 </Project>

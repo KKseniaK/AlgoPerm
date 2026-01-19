@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "seminar-02/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/seminar-02.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/seminar-02.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "seminar-02/1.0.0": {
+      "type": "project",
+      "path": "../seminar-02/seminar-02.csproj",
+      "msbuildProject": "../seminar-02/seminar-02.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "seminar-02 >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\kseni\\.nuget\\packages\\": {},
@@ -38,7 +57,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\kseni\\source\\repos\\AlgoPerm\\seminar-02\\seminar-02.csproj": {
+              "projectPath": "C:\\Users\\kseni\\source\\repos\\AlgoPerm\\seminar-02\\seminar-02.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
