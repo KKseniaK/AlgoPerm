@@ -66,7 +66,7 @@ namespace JohnsonDemo
             int time = schedule.Last().End2;
 
             Console.WriteLine("\nОптимальный порядок:");
-            Console.WriteLine("1 этап: " + string.Join(", ", order.Select(j => $"{j.Name}({j.Stage1},{j.Stage2})")));
+            Console.WriteLine("1 этап: " + string.Join(", ", schedule.Select(s => $"{s.Name}({s.Start1}–{s.End1})")));
             Console.WriteLine("2 этап: " + string.Join(", ",
                 schedule.Select(s => $"{s.Name}({s.Start2}–{s.End2})")));
 
@@ -88,7 +88,7 @@ namespace JohnsonDemo
             int time = schedule.Last().End2;
 
             Console.WriteLine("\n");
-            Console.WriteLine("1 этап: " + string.Join(", ", order.Select(j => $"{j.Name}({j.Stage1},{j.Stage2})")));
+            Console.WriteLine("1 этап: " + string.Join(", ", schedule.Select(s => $"{s.Name}({s.Start1}–{s.End1})")));
             Console.WriteLine("2 этап: " + string.Join(", ",
                 schedule.Select(s => $"{s.Name}({s.Start2}–{s.End2})")));
 
