@@ -1,0 +1,5 @@
+C:\Users\kseni\source\repos\AlgoPerm\seminar-22\obj\Debug\net8.0\seminar-22.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kseni\source\repos\AlgoPerm\seminar-22\obj\Debug\net8.0\seminar-22.AssemblyInfoInputs.cache
+C:\Users\kseni\source\repos\AlgoPerm\seminar-22\obj\Debug\net8.0\seminar-22.AssemblyInfo.cs
+C:\Users\kseni\source\repos\AlgoPerm\seminar-22\obj\Debug\net8.0\seminar-22.csproj.CoreCompileInputs.cache
+C:\Users\kseni\source\repos\AlgoPerm\seminar-22\obj\Debug\net8.0\seminar-22.sourcelink.json

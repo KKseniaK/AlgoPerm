@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "seminar-04", "..\seminar-04
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "seminar-21", "..\seminar-21\seminar-21.csproj", "{D482BB47-0267-4691-A031-29F58BC6B7AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "seminar-22", "..\seminar-22\seminar-22.csproj", "{24871F2F-41EC-4E27-B0A3-33D31C9D076C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D482BB47-0267-4691-A031-29F58BC6B7AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D482BB47-0267-4691-A031-29F58BC6B7AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D482BB47-0267-4691-A031-29F58BC6B7AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24871F2F-41EC-4E27-B0A3-33D31C9D076C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24871F2F-41EC-4E27-B0A3-33D31C9D076C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24871F2F-41EC-4E27-B0A3-33D31C9D076C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24871F2F-41EC-4E27-B0A3-33D31C9D076C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
