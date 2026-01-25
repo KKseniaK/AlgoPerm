@@ -333,7 +333,7 @@ static class Input
         if (string.IsNullOrWhiteSpace(line))
             return new List<char>();
 
-        var parts = line.Split(new[] { ' ', ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        var parts = line.Split(new[] { ' ', ',', ';', '\t' });
         var res = new List<char>();
 
         foreach (var part in parts)

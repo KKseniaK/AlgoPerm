@@ -1,0 +1,27 @@
+graph G {
+  rankdir=LR;
+  graph [bgcolor="white", fontname="Consolas", labelloc="t"];
+  label="g2 | Wave size = 4";
+  node [shape=circle, style=filled, fontname="Consolas"];
+  edge [color="#777777"];
+  v0 [fillcolor="lightblue", label="A\nM=5"];
+  v1 [fillcolor="lightblue", label="B\nM=2"];
+  v2 [fillcolor="lightblue", label="C\nM=4"];
+  v3 [fillcolor="lightblue", label="D\nM=-"];
+  v4 [fillcolor="lightblue", label="E\nM=3"];
+  v26 [fillcolor="palegreen", label="1\nM=-"];
+  v27 [fillcolor="palegreen", label="2\nM=B"];
+  v28 [fillcolor="palegreen", label="3\nM=E"];
+  v29 [fillcolor="palegreen", label="4\nM=C"];
+  v30 [fillcolor="palegreen", label="5\nM=A"];
+  v0 -- v26;
+  v0 -- v30 [color="red", penwidth=3.0];
+  v1 -- v27 [color="red", penwidth=3.0];
+  v1 -- v29;
+  v2 -- v27;
+  v2 -- v28;
+  v2 -- v29 [color="red", penwidth=3.0];
+  v3 -- v27;
+  v3 -- v29;
+  v4 -- v28 [color="red", penwidth=3.0];
+}

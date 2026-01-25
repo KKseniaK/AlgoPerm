@@ -1,26 +1,24 @@
 graph G {
   rankdir=LR;
   graph [bgcolor="white", fontname="Consolas", labelloc="t"];
-  label="Wave size = 4";
+  label="g5 | Wave size = 4";
   node [shape=circle, style=filled, fontname="Consolas"];
   edge [color="#777777"];
   v0 [fillcolor="lightblue", label="A\nM=-"];
   v1 [fillcolor="lightblue", label="B\nM=1"];
   v2 [fillcolor="lightblue", label="C\nM=2"];
-  v3 [fillcolor="lightblue", label="D\nM=3"];
-  v4 [fillcolor="lightblue", label="E\nM=5"];
+  v3 [fillcolor="lightblue", label="D\nM=4"];
+  v4 [fillcolor="lightblue", label="E\nM=3"];
   v26 [fillcolor="palegreen", label="1\nM=B"];
   v27 [fillcolor="palegreen", label="2\nM=C"];
-  v28 [fillcolor="palegreen", label="3\nM=D"];
-  v29 [fillcolor="palegreen", label="4\nM=-"];
-  v30 [fillcolor="palegreen", label="5\nM=E"];
-  v0 -- v26;
+  v28 [fillcolor="palegreen", label="3\nM=E"];
+  v29 [fillcolor="palegreen", label="4\nM=D"];
+  v30 [fillcolor="palegreen", label="5\nM=-"];
+  v0 -- v29;
   v1 -- v26 [color="red", penwidth=3.0];
-  v1 -- v28;
+  v1 -- v30;
   v2 -- v27 [color="red", penwidth=3.0];
   v2 -- v28;
-  v2 -- v29;
-  v3 -- v28 [color="red", penwidth=3.0];
-  v4 -- v28;
-  v4 -- v30 [color="red", penwidth=3.0];
+  v3 -- v29 [color="red", penwidth=3.0];
+  v4 -- v28 [color="red", penwidth=3.0];
 }
