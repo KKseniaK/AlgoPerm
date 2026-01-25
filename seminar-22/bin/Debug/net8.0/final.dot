@@ -1,0 +1,30 @@
+graph G {
+  rankdir=LR;
+  graph [bgcolor="white", fontname="Consolas", labelloc="t"];
+  label="Max matching size = 5";
+  node [shape=circle, style=filled, fontname="Consolas"];
+  edge [color="#777777"];
+  { rank=same; v0 v1 v2 v3 v4 }
+  { rank=same; v26 v27 v28 v29 v30 }
+  v0 [fillcolor="lightblue", label="A\nM=4"];
+  v1 [fillcolor="lightblue", label="B\nM=1"];
+  v2 [fillcolor="lightblue", label="C\nM=3"];
+  v3 [fillcolor="lightblue", label="D\nM=2"];
+  v4 [fillcolor="lightblue", label="E\nM=5"];
+  v26 [fillcolor="palegreen", label="1\nM=B"];
+  v27 [fillcolor="palegreen", label="2\nM=D"];
+  v28 [fillcolor="palegreen", label="3\nM=C"];
+  v29 [fillcolor="palegreen", label="4\nM=A"];
+  v30 [fillcolor="palegreen", label="5\nM=E"];
+  v0 -- v26;
+  v0 -- v27;
+  v0 -- v29 [color="red", penwidth=3.0];
+  v1 -- v26 [color="red", penwidth=3.0];
+  v1 -- v29;
+  v1 -- v30;
+  v2 -- v28 [color="red", penwidth=3.0];
+  v2 -- v29;
+  v3 -- v27 [color="red", penwidth=3.0];
+  v3 -- v30;
+  v4 -- v30 [color="red", penwidth=3.0];
+}

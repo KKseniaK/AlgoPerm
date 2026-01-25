@@ -1,0 +1,15 @@
+graph G {
+  rankdir=LR;
+  node [shape=circle];
+  "A" -- "1" [color=red, penwidth=3.0];
+  "A" -- "2";
+  "A" -- "4";
+  "B" -- "1";
+  "B" -- "4" [color=red, penwidth=3.0];
+  "B" -- "5";
+  "C" -- "3" [color=red, penwidth=3.0];
+  "C" -- "4";
+  "D" -- "2" [color=red, penwidth=3.0];
+  "D" -- "5";
+  "E" -- "5" [color=red, penwidth=3.0];
+}
