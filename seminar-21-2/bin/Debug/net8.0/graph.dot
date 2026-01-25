@@ -1,0 +1,30 @@
+digraph G {
+  rankdir=LR;
+  node [shape=box, style=filled, fontname="Consolas"];
+  A [fillcolor="white", label="A\nX=4"];
+  B [fillcolor="palegreen", label="B\nX=1"];
+  C [fillcolor="lightblue", label="C\nX=12"];
+  D [fillcolor="lightblue", label="D\nX=11"];
+  E [fillcolor="white", label="E\nX=8"];
+  F [fillcolor="white", label="F\nX=9"];
+  G [fillcolor="white", label="G\nX=5"];
+  H [fillcolor="white", label="H\nX=7"];
+  I [fillcolor="lightblue", label="I\nX=10"];
+  J [fillcolor="palegreen", label="J\nX=2"];
+  K [fillcolor="palegreen", label="K\nX=3"];
+  L [fillcolor="white", label="L\nX=6"];
+  A -> B;
+  A -> J;
+  C -> E;
+  C -> F;
+  D -> E;
+  E -> H;
+  F -> H;
+  G -> J;
+  G -> K;
+  H -> A;
+  H -> G;
+  I -> H;
+  I -> L;
+  L -> G;
+}
