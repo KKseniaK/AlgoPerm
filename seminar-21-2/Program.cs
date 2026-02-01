@@ -51,7 +51,7 @@ sealed class Graph
 
 #region Comparers
 
-sealed class LexKeyComparerAscending : IComparer<List<int>>
+class LexKeyComparerAscending : IComparer<List<int>>
 {
     public int Compare(List<int> a, List<int> b)
     {
@@ -138,7 +138,6 @@ static class Algo
 
         var orderedAll = g.Nodes.Values
             .OrderByDescending(v => v.PriorityLex)
-            .ThenBy(v => v.Name)
             .ToList();
 
         while (done.Count < g.Nodes.Count)
