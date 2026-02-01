@@ -8,7 +8,8 @@ class Program
     {
         Console.WriteLine("Здравствуйте! Выберите способ ввода данных для задачи по лексикографической стратегии расписания");
         Console.WriteLine("1 - готовый набор данных");
-        Console.WriteLine("2 - самостоятельный ввод");
+        Console.WriteLine("2 - неудачная задачка :(");
+        Console.WriteLine("3 - самостоятельный ввод");
         int choice = int.Parse(Console.ReadLine());
 
         switch (choice)
@@ -18,7 +19,13 @@ class Program
                 char[] next = { 'A', 'G', 'A', 'I', 'B', 'B', 'L', 'M', 'N', 'O', 'B', 'C', 'D', 'E', 'H', 'G', 'H', 'I', 'I', 'L', 'M' };
                 GeneralProgram(prev, next);
                 break;
+
             case 2:
+                char[] prev2 = { 'D', 'D', 'D', 'J', 'J', 'J', 'F', 'F', 'B', 'G', 'G', 'A', 'K', 'K' };
+                char[] next2 = { 'C', 'A', 'G', 'G', 'A', 'K', 'G', 'K', 'K', 'H', 'E', 'E', 'C', 'E' };
+                GeneralProgram(prev2, next2);
+                break;
+            case 3:
                 Console.Clear();
                 Console.WriteLine("Через запятую введите предшествующие задачи:");
                 string prevLine = Console.ReadLine();
@@ -28,16 +35,16 @@ class Program
                 string[] prevParts = prevLine.Split(',');
                 string[] nextParts = nextLine.Split(',');
 
-                char[] prev2 = new char[prevParts.Length];
-                char[] next2 = new char[nextParts.Length];
+                char[] prev3 = new char[prevParts.Length];
+                char[] next3 = new char[nextParts.Length];
 
                 for (int i = 0; i < prevParts.Length; i++)
                 {
-                    prev2[i] = prevParts[i].Trim()[0];
-                    next2[i] = nextParts[i].Trim()[0];
+                    prev3[i] = prevParts[i].Trim()[0];
+                    next3[i] = nextParts[i].Trim()[0];
                 }
 
-                GeneralProgram(prev2, next2);
+                GeneralProgram(prev3, next3);
                 break;
         }
     }
@@ -45,6 +52,12 @@ class Program
     {
         var graph = BuildGraph(Prev, Next);
         var allTasks = new HashSet<char>(Prev.Concat(Next)).OrderBy(x => x).ToList();
+
+        if (HasCycle(graph, allTasks))
+        {
+            Console.WriteLine("\n Ошибка!!! В зависимостях обнаружен цикл! Лексикографическая стратегия не может быть применина.");
+            return;
+        }
 
         var stok = allTasks.Where(task => !graph.ContainsKey(task) || graph[task].Count == 0).ToList();
 
@@ -63,15 +76,21 @@ class Program
 
             foreach (var task in othersPrio)
             {
+                // Проверка, все ли потомки уже имеют приоритет?
+                if (graph.ContainsKey(task))
+                {
+                    var allChildrenProcessed = graph[task].All(child => priority.ContainsKey(child));
+                    if (!allChildrenProcessed)
+                        continue;
+                }
+                else { continue; }
+
                 var childPriorities = graph[task]
-                    .Where(child => priority.ContainsKey(child))
                     .Select(child => priority[child])
                     .OrderByDescending(p => p)
                     .ToList();
 
-                if (childPriorities.Count == 0) continue;
-
-                string key = string.Concat(childPriorities.Select(p => p.ToString("D3")));
+                string key = string.Concat(childPriorities.Select(p => p.ToString($"D3")));
                 variantsOfTask.Add((task, key));
             }
 
@@ -87,9 +106,8 @@ class Program
             othersPrio.Remove(best.task);
         }
 
-
         Console.Clear();
-        Console.WriteLine("\nПриоритеты задач:");
+        Console.WriteLine("Приоритеты задач:");
         foreach (var task in priority.OrderBy(task => task.Value))
         {
             if (graph.ContainsKey(task.Key))
@@ -117,7 +135,7 @@ class Program
 
         while (completed.Count < allTasks.Count)
         {
-            var ready = allTasks // Задачи, которые еще не завершены, но все их предшественники завершены
+            var ready = allTasks
                 .Where(task => !completed.Contains(task) && previous[task].All(pred => completed.Contains(pred)))
                 .OrderByDescending(task => priority[task])
                 .ToList();
@@ -141,7 +159,7 @@ class Program
         for (int t = 0; t < timeline.Count; t++)
         {
             var a = timeline[t];
-            Console.WriteLine($"t={t + 1 + " "}  |   {a[0]}   |   {a[1]}");
+            Console.WriteLine($"t={t + 1,2}  |   {a[0]}   |   {a[1]}");
         }
     }
 
@@ -155,5 +173,33 @@ class Program
             graph[prev[i]].Add(next[i]);
         }
         return graph;
+    }
+
+    private static bool HasCycle(Dictionary<char, List<char>> graph, List<char> allTasks)
+    {
+        var visiting = new HashSet<char>();
+        var visited = new HashSet<char>();
+
+        bool Dfs(char node)
+        {
+            if (visited.Contains(node)) return false;
+            if (visiting.Contains(node)) return true; // цикл найден!
+
+            visiting.Add(node);
+
+            if (graph.ContainsKey(node))
+            {
+                foreach (var child in graph[node])
+                {
+                    if (Dfs(child)) return true;
+                }
+            }
+
+            visiting.Remove(node);
+            visited.Add(node);
+            return false;
+        }
+
+        return allTasks.Any(Dfs);
     }
 }
