@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 public class HungarianAlgorithm
 {
     public static void Main()
@@ -47,19 +47,80 @@ public class HungarianAlgorithm
                 break;
 
             case 3:
+                Console.Write("Введите желаемую минимальную стоимость (итоговый ответ): ");
+                int minCost = int.Parse(Console.ReadLine());
+
                 Console.Write("Введите размер квадратной матрицы (n): ");
                 int size = int.Parse(Console.ReadLine());
 
+                if (minCost < size) { Console.WriteLine("Минимальная стоимость не может быть меньше размера матрицы"); return; }
+
                 Random rand = new Random();
-                matrix = new int[size, size];
-                for (int i = 0; i < size; i++)
+                int[] optimalSolution = null;
+
+                //Основной цикл для генерации матрицы. Если minCost != minCost созданной матрицы, пробуем еще раз и так 100 раз
+                bool success = false;
+                for (int attempt = 0; attempt < 100 && !success; attempt++)
                 {
-                    for (int j = 0; j < size; j++)
+                    matrix = new int[size, size];
+
+                    optimalSolution = new int[size];
+                    List<int> availableCols = new List<int>();
+                    for (int j = 0; j < size; j++) availableCols.Add(j);
+
+                    for (int i = 0; i < size; i++)
                     {
-                        matrix[i, j] = rand.Next(1, 101);
+                        int idx = rand.Next(availableCols.Count);
+                        optimalSolution[i] = availableCols[idx];
+                        availableCols.RemoveAt(idx);
                     }
+
+                    // Распределяем стоимость по ячейкам
+                    int[] solutionValues = new int[size];
+                    int remaining = minCost;
+
+                    for (int i = 0; i < size - 1; i++)
+                    {
+                        int maxVal = Math.Max(1, remaining - (size - i - 1));
+                        solutionValues[i] = rand.Next(1, maxVal + 1);
+                        remaining -= solutionValues[i];
+                    }
+                    solutionValues[size - 1] = Math.Max(1, remaining);
+
+                    // Устанавливаем ячейки
+                    for (int i = 0; i < size; i++)
+                    {
+                        matrix[i, optimalSolution[i]] = solutionValues[i];
+                    }
+
+                    // Заполняем остальные ячейки
+                    for (int i = 0; i < size; i++)
+                    {
+                        for (int j = 0; j < size; j++)
+                        {
+                            if (j == optimalSolution[i]) continue;
+
+                            int baseValue = solutionValues[i];
+                            int noise = rand.Next(-5, 7);
+                            matrix[i, j] = Math.Max(1, baseValue + noise);
+                        }
+                    }
+
+                    try
+                    {
+                        var (assignment, totalCost) = GeneralMethod(matrix);
+                        if (totalCost == minCost) { success = true; }
+                    }
+                    catch { }
                 }
 
+                if (!success)
+                {
+                    Console.WriteLine("Не удалось гарантировать точное совпадение после 100 попыток.");
+                    Console.WriteLine("Матрица сгенерирована приближённо — результат может немного отличаться.");
+                }
+
+                Console.Clear();
                 Console.WriteLine("Сгенерированная матрица:");
                 for (int i = 0; i < size; i++)
                 {
@@ -70,6 +131,7 @@ public class HungarianAlgorithm
                     Console.WriteLine();
                 }
                 Console.WriteLine();
+                
                 break;
 
             default:
