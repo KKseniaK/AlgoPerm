@@ -19,6 +19,13 @@ namespace seminar_27.Core
         Roulette
     }
 
+    public enum CrossoverType
+    {
+        OnePoint,
+        TwoPoint,
+        Uniform
+    }
+
     public interface IGeneticProblem<TChromosome>
     {
         string Name { get; }
@@ -34,6 +41,7 @@ namespace seminar_27.Core
         (TChromosome Child1, TChromosome Child2) Crossover(
             TChromosome parent1,
             TChromosome parent2,
+            CrossoverType crossoverType,
             Random random);
 
         TChromosome Mutate(TChromosome chromosome, Random random);

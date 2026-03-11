@@ -191,7 +191,12 @@ namespace seminar_27.Core
                 if (problem.AreEqual(p1.Chromosome, p2.Chromosome))
                     continue;
 
-                var (c1, c2) = problem.Crossover(p1.Chromosome, p2.Chromosome, random);
+                var (c1, c2) = problem.Crossover(
+                    p1.Chromosome,
+                    p2.Chromosome,
+                    config.CrossoverType,
+                    random
+                );
                 var produced = new[] { c1, c2 };
 
                 foreach (var chr in produced)

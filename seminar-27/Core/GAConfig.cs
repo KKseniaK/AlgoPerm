@@ -19,5 +19,6 @@ namespace seminar_27.Core
         public int TournamentSize { get; init; } = 2;
 
         public SelectionMethod SelectionMethod { get; init; } = SelectionMethod.Elite;
+        public CrossoverType CrossoverType { get; init; } = CrossoverType.OnePoint;
     }
 }
