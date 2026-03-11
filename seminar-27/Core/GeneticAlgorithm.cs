@@ -49,7 +49,7 @@ namespace seminar_27.Core
                 if (log)
                 {
                     Console.WriteLine(
-                        $"[{problem.Name}] Gen {gen}: best={best.Fitness:F2}, avg={avg:F2}, chr={problem.ChromosomeToString(best.Chromosome)}");
+                        $"[{problem.Name}] Gen {gen}: best={best.Fitness}; avg={avg:F2}; chr={problem.ChromosomeToString(best.Chromosome)}");
                 }
 
                 if (Better(best.Fitness, bestOverall.Fitness))
